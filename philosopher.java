@@ -18,21 +18,24 @@ class Philosopher extends Thread {
         for (int i = 1; i <= 10; i++) {
             System.out.println("Philosopher " + id + " thinking " + i + " time");
 
-            try {
-                forks[leftFork].acquire();
-                forks[rightFork].acquire();
-                
-                System.out.println("Philosopher " + id + " took both forks");
-                
-                System.out.println("Philosopher " + id + " eating " + i + " time");
-
-                forks[rightFork].release();
-                forks[leftFork].release();
-                
-                System.out.println("Philosopher " + id + " put both forks");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (id % 2 != 0) {
+                forks[leftFork].acquireUninterruptibly();
+                System.out.println("Philosopher " + id + " took left fork");
+                forks[rightFork].acquireUninterruptibly();
+                System.out.println("Philosopher " + id + " took right fork");
+            } else {
+                forks[rightFork].acquireUninterruptibly();
+                System.out.println("Philosopher " + id + " took right fork");
+                forks[leftFork].acquireUninterruptibly();
+                System.out.println("Philosopher " + id + " took left fork");
             }
+            
+            System.out.println("Philosopher " + id + " eating " + i + " time");
+
+            forks[rightFork].release();
+            System.out.println("Philosopher " + id + " put right fork");
+            forks[leftFork].release();
+            System.out.println("Philosopher " + id + " put left fork");
         }
     }
 }
